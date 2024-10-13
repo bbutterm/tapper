@@ -1,62 +1,126 @@
 .App {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(to bottom, #0066cc, #33ccff);
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
+
 .content-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  position: relative; 
+  height: 100%;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 20px;
 }
 
 .score-container {
   position: absolute;
-  top: 10px; 
-  right: 70px; 
+  top: 10px;
+  left: 10px;
+  text-align: left;
+  font-weight: bold;
+  font-size: 1.5em;
+  color: #ffffff;
+  z-index: 2;
+}
+
+.energy-container {
+  position: absolute;
+  top: 80px;
+  left: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 1;
+}
+
+.energy-bar {
+  width: 50px;
+  height: 200px;
+  background-color: #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.energy-fill {
+  width: 100%;
+  height: 100%;
+  background-color: #4CAF50;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  transition: height 0.3s ease;
+}
+
+.energy-bar::after {
+  content: '⚡️';
+  position: relative;
+  z-index: 1;
 }
 
 .center-container {
-  flex: 1; 
+  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .shop-button-container {
   position: absolute;
-  bottom: 20px; 
-  right: 0px; 
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
 }
 
 .shop-button {
-  padding: 10px 20px;
+  padding: 12px 24px;
   border: none;
-  border-radius: 5px;
-  background-color: #4CAF50;
+  border-radius: 10px;
+  background-color: #ff6347;
   color: white;
   cursor: pointer;
   font-size: 1.2em;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, transform 0.2s;
 }
 
 .shop-button:hover {
-  background-color: #45a049;
+  background-color: #ff4500;
+  transform: scale(1.05);
 }
 
 .shop {
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: white;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 300px;
   z-index: 100;
-  width: 90%; /* Added width for shop */
-  max-width: 300px; /* Added max-width for shop */
 }
 
 .shop-header {
@@ -97,48 +161,86 @@
   cursor: default;
 }
 
-.energy-container {
-  display: flex;
-  margin-top: 10px;
-  position: absolute;
-  top: 0px;
-  left: 250px;
-  z-index: 1; /* Added z-index */
-}
-
-.energy-value {
-  margin-left: 10px;
-  font-size: 1.5em;
-}
-
-.energy-bar {
-  width: 30px;
-  height: 100px;
-  background-color: #ddd; /* Background color of the bar */
-  border-radius: 5px;
-  overflow: hidden; /* Hide the overflow of the energy fill */
-  position: relative; /* Added position: relative */
-}
-
-.energy-fill {
-  width: 100%;
-  height: 100%;
-  background-color: #4CAF50; /* Green background for the fill */
-  position: absolute;
-  bottom: 0;
-  left: 0;
-}
 .rocket {
-  width: 100px;
-  height: 100px;
-  transition: transform 0.1s ease-in-out; /* Added transition */
+  width: 200px;
+  height: 200px;
+  transition: transform 0.1s ease-in-out;
 }
 
 .rocket:hover {
-  transform: scale(1.1); /* Enlarged on hover */
+  transform: scale(1.1);
 }
 
 .rocket:active {
-  transform: scale(0.9); /* Slightly shrink on click */
-  background-color: #f5e908; /* Added background color */
+  transform: scale(0.9);
+  background-color: #f5e908;
+}
+
+.boost-timer {
+  position: absolute;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  height: 20px;
+  background-color: yellow;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: black;
+}
+
+
+@media (max-width: 480px) {
+  .score-container {
+    top: 10px;
+    left: 10px;
+    font-size: 1.2em;
+  }
+
+  .shop-button-container {
+    bottom: 10px;
+  }
+
+  .energy-container {
+    top: 80px;
+    left: 10px;
+  }
+
+  .energy-bar {
+    width: 40px;
+    height: 150px;
+  }
+
+  .rocket {
+    width: 150px;
+    height: 150px;
+  }
+  .rocket:active {
+    transform: scale(0.9);
+    background-color: #f5e908;
+    border-radius: 50%;
+    padding: 20px;
+  }
+
+
+  .boost-timer {
+    position: absolute;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 20px;
+    background-color: yellow;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: black;
+    transition: width 1s linear;
+  }
+  
+  
 }

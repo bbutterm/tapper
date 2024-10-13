@@ -8,6 +8,9 @@ function App() {
   const [showShop, setShowShop] = useState(false);
   const [autoClickerActive, setAutoClickerActive] = useState(false);
   const [autoClickerInterval, setAutoClickerInterval] = useState(3000); // Время автокликера в миллисекундах
+  const [boostActive, setBoostActive] = useState(false);
+  const [boostTimeLeft, setBoostTimeLeft] = useState(0);
+  const [previousMultiplier, setPreviousMultiplier] = useState(1);
 
   const handleClick = () => {
     if (energy > 0) {
@@ -15,15 +18,16 @@ function App() {
       setEnergy(energy - 1);
     }
   };
+  
 
   useEffect(() => {
     const energyInterval = setInterval(() => {
-      setEnergy(Math.min(energy + 1, 100));
+      setEnergy((prevEnergy) => Math.min(prevEnergy + 1, 100));
     }, 1000);
 
     if (autoClickerActive) {
       const autoClickInterval = setInterval(() => {
-        setScore(score + multiplier);
+        setScore((prevScore) => prevScore + multiplier);
       }, autoClickerInterval); // Используем autoClickerInterval
 
       return () => {
@@ -33,7 +37,30 @@ function App() {
     } else {
       return () => clearInterval(energyInterval);
     }
-  }, [energy, autoClickerActive, autoClickerInterval]);
+  }, [autoClickerActive, autoClickerInterval, multiplier]);
+
+  useEffect(() => {
+    if (boostActive) {
+      setBoostTimeLeft(10);
+      const boostTimer = setInterval(() => {
+        setBoostTimeLeft((timeLeft) => {
+          if (timeLeft <= 1) {
+            setBoostActive(false);
+            setMultiplier(previousMultiplier);
+            clearInterval(boostTimer);
+            return 0;
+          }
+          return timeLeft - 1;
+        });
+      }, 1000);
+  
+      return () => {
+        clearInterval(boostTimer);
+        setBoostTimeLeft(0); // Сбрасываем таймер
+      };
+    }
+  }, [boostActive, previousMultiplier]);
+  
 
   const openShop = () => {
     setShowShop(true);
@@ -47,14 +74,23 @@ function App() {
     <div className="App">
       <div className="content-container">
         <div className="score-container">
-          <Score score={score} multiplier={multiplier} energy={energy} />
+          <Score score={score} multiplier={multiplier} energy={energy} boostTimeLeft={boostTimeLeft} />
         </div>
         <div className="center-container">
-          <Clicker handleClick={handleClick} />
-        </div>
+  <Clicker handleClick={handleClick} energy={energy} />
+</div>
+
         <div className="shop-button-container">
           <ShopButton onClick={openShop} />
         </div>
+        {boostActive && (
+  <div
+    className="boost-timer"
+    style={{ width: `${(boostTimeLeft / 10) * 100}%` }}
+  >
+    {boostTimeLeft}s
+  </div>
+)}
       </div>
       {showShop && (
         <Shop
@@ -67,13 +103,16 @@ function App() {
           closeShop={closeShop}
           autoClickerInterval={autoClickerInterval}
           setAutoClickerInterval={setAutoClickerInterval}
+          setBoostActive={setBoostActive}
+          setBoostTimeLeft={setBoostTimeLeft}
+          setPreviousMultiplier={setPreviousMultiplier}
         />
       )}
     </div>
   );
 }
 
-function Score({ score, multiplier, energy }) {
+function Score({ score, multiplier, energy, boostTimeLeft }) {
   return (
     <div className="score-container">
       <div className="score">Score: {score}</div>
@@ -88,13 +127,18 @@ function Score({ score, multiplier, energy }) {
   );
 }
 
-function Clicker({ handleClick }) {
+function Clicker({ handleClick, energy }) {
   return (
-    <div onClick={handleClick}>
-      <img src="https://cdn.icon-icons.com/icons2/1403/PNG/128/sodacanicon_97035.png" alt="Rocket" className="rocket" />
+    <div
+      onClick={handleClick}
+      className="clicker"
+      style={{ backgroundColor: energy > 0 ? '#f5e908' : 'transparent', borderRadius: '50%' }}
+    >
+      <img src="https://cdn.icon-icons.com/icons2/1403/PNG/128/sodacanicon_97035.png" alt="Energy" className="rocket" />
     </div>
   );
 }
+
 
 function ShopButton({ onClick }) {
   return (
@@ -114,6 +158,9 @@ function Shop({
   closeShop,
   autoClickerInterval,
   setAutoClickerInterval,
+  setBoostActive,
+  setBoostTimeLeft,
+  setPreviousMultiplier,
 }) {
   const buyMultiplier2 = () => {
     if (score >= 200 && multiplier === 1) {
@@ -135,6 +182,16 @@ function Shop({
     if (score >= 1000 && !autoClickerActive) {
       setScore(score - 1000);
       setAutoClickerActive(true);
+      closeShop();
+    }
+  };
+
+  const buyBoost = () => {
+    if (score >= 100) {
+      setScore(score - 100);
+      setPreviousMultiplier(multiplier);
+      setMultiplier(10);
+      setBoostActive(true);
       closeShop();
     }
   };
@@ -174,6 +231,17 @@ function Shop({
           onClick={buyAutoClicker}
           disabled={score < 1000 || autoClickerActive}
           className={score < 1000 || autoClickerActive ? 'disabled-button' : ''}
+        >
+          Buy
+        </button>
+      </div>
+      <div className="shop-item">
+        <h3>Temporary Boost</h3>
+        <p>Price: 100</p>
+        <button
+          onClick={buyBoost}
+          disabled={score < 100}
+          className={score < 100 ? 'disabled-button' : ''}
         >
           Buy
         </button>
