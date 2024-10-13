@@ -1,38 +1,144 @@
 .App {
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.content-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  height: 100vh;
+  position: relative; 
+}
+
+.score-container {
+  position: absolute;
+  top: 10px; 
+  right: 70px; 
+}
+
+.center-container {
+  flex: 1; 
+  display: flex;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  align-items: center;
+}
+
+.shop-button-container {
+  position: absolute;
+  bottom: 20px; 
+  right: 0px; 
+}
+
+.shop-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #4CAF50;
   color: white;
+  cursor: pointer;
+  font-size: 1.2em;
+  transition: background-color 0.3s;
 }
 
-.App-link {
-  color: #61dafb;
+.shop-button:hover {
+  background-color: #45a049;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.shop {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  z-index: 100;
+  width: 90%; /* Added width for shop */
+  max-width: 300px; /* Added max-width for shop */
+}
+
+.shop-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.shop-item {
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.shop-item button {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  background-color: #4CAF50;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.shop-item button:hover {
+  background-color: #45a049;
+}
+
+.shop-item button:disabled {
+  background-color: #f44336;
+  cursor: default;
+}
+
+.disabled-button {
+  background-color: #f44336;
+  cursor: default;
+}
+
+.energy-container {
+  display: flex;
+  margin-top: 10px;
+  position: absolute;
+  top: 0px;
+  left: 250px;
+  z-index: 1; /* Added z-index */
+}
+
+.energy-value {
+  margin-left: 10px;
+  font-size: 1.5em;
+}
+
+.energy-bar {
+  width: 30px;
+  height: 100px;
+  background-color: #ddd; /* Background color of the bar */
+  border-radius: 5px;
+  overflow: hidden; /* Hide the overflow of the energy fill */
+  position: relative; /* Added position: relative */
+}
+
+.energy-fill {
+  width: 100%;
+  height: 100%;
+  background-color: #4CAF50; /* Green background for the fill */
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+.rocket {
+  width: 100px;
+  height: 100px;
+  transition: transform 0.1s ease-in-out; /* Added transition */
+}
+
+.rocket:hover {
+  transform: scale(1.1); /* Enlarged on hover */
+}
+
+.rocket:active {
+  transform: scale(0.9); /* Slightly shrink on click */
+  background-color: #f5e908; /* Added background color */
 }
